@@ -1,31 +1,57 @@
 # phone-secretary
 
-## Android application
+## Android application (React Native)
 
 ### Goal:
- - provide phone owner with reminders, context, information about people and initiatives, problems
+ - Provide phone owner with reminders, context, information about people and initiatives, problems.
+ - Act as an intelligent "Second Brain" for meetings and networking.
 
-### Data sources:
- - access to email, Teams
- - photos (photos with the text of emails, meeting notes - need to use OCR to conveert into the text)
- - recorder (to be turned on during meetings), then transform to text. Need to understand where is voice of the owner and not to mess up info said by owner and by the other person
+### Data Sources:
+ - **Audio Recordings**: Meetings, "catch-up" sessions, voice notes.
+ - **Photos**: Photos of emails, Teams chats, whiteboard notes.
+ - *Future Integration*: Direct access to email/Teams APIs (not in V1).
 
+### Core Features:
+1.  **Smart Recording**:
+    - Record audio immediately.
+    - **Diarization**: Distinguish between "Owner" and others.
+    - Owner can "Onboard" (record voice sample) to help identification.
+    - Manual correction of speaker identities after recording.
+2.  **Vision Capture**:
+    - Take photos of text-heavy content (emails, chats).
+    - Parse content using AI to update dossiers/tasks.
+3.  **Manual Input**:
+    - Add thoughts/tasks to specific dossiers manually.
+4.  **Intelligent Processing (Gemini powered)**:
+    - Summarize problems/initiatives.
+    - Maintain dynamic "Dossiers" on people (Family, Hobbies, Plans, Opinions).
+    - Extract and classify Action Items.
+5.  **Notifications**:
+    - Automatic scheduling of reminders for Action Items.
+    - Local push notifications to ensure timely follow-ups.
+6.  **Database & Retrieval**:
+    - **People Dossier**: Structured views of contacts.
+    - **Problem/Initiative Dossier**: Context and history of specific topics.
+6.  **Action Item Management**:
+    - "On Me": Personal tasks.
+    - "On Others": Tasks to chase.
+    - **Auto-Notifications**: AI classifies task complexity (easy = 2h reminder, Big = 1d reminder).
 
-### Examples how to use data:
- - Record meetings: for example call regarding some problem, where the app needs to summarize and keep in memory problems, action items and people opinions
- - Catchup with the person "on the go", record discussion: it forms dossier on people with personal info (hobbies, family, plans) and opinions, that can help application owner to prepare for the next meeting
+### Technical Architecture
 
-### Interface:
- - collect data:
-	 - audio recorder: start recording immediately, distinguish what was said by owner and what was said by other person; at the end of recording owner can set who was the other person
-	 - take a photo (of email or teams chat), then parse it and add into database
-	 - manual input: owner can choose problem or person and add information into their dossier (as a text or as a voice recording)
- - database:
-	 - dossier on people (choose person, then see information about him)
-	 - dossier on problem (choose problem/initiative, then see information about it and people's opinions)
- - action items
-	 - Action items on me (not to forget to do)
-	 - Action items on the other people (not to forget to chase)
- - Reminders notifications of action items on me. Important to understand when to remind. For small tasks it's 2hours before deadline, for big tasks - 1 day before deadline
+#### Stack
+- **Framework**: React Native (Cross-platform capable, initially Android focused).
+- **AI Provider**: Google Gemini API (Multi-modal: Audio, Vision, Text).
+  - *Architecture Note*: Abstracted behind an `AIService` interface to allow future swapping of providers.
+- **Database**: Local SQLite (via `expo-sqlite` or similar). Local-first architecture specifically designed to support Cloud Sync in V2.
+- **Storage**: App-private storage for audio/images.
 
-   
+#### Data Privacy & Security
+- **Auth**: Local API Key storage (V1).
+- **Processing**: Cloud-based processing via Gemini (Audio/Images sent to cloud).
+- **Persistence**: Data stored locally on the device (SQLite).
+
+## Future Roadmap (V2+)
+- Cloud Sync for Database.
+- Direct integrations with Microsoft Graph / Google Workspace.
+- Enhanced On-device AI for offline basic capabilities.
